@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Day12
 {
@@ -7,130 +8,34 @@ namespace Day12
     {
         static void Main(string[] args)
         {
-            var ls = new List<string> { "Ant", "Bat", "Cat", "Dog" };
-            int k = 2;
-            KGroupAssignmentsEmpty(ls, k);
+            Sums(10);
         }
 
-        static void GroupAssignments(List<string> ls)
+        static void Sums(int n)
         {
-            var groups = new List<List<string>>();
-            GroupAssignments(ls, 0, groups);
+            Sums(n, new List<int>());
         }
 
-        static void GroupAssignments(List<string> ls, int idx, List<List<string>> groups)
+        static void Sums(int n, List<int> result)
         {
-            if (ls.Count == idx)
+            if (n == 0)
             {
-                PrintGroups(groups);
+                PrintSums(result);
                 return;
             }
-            // Add the current element to each existing group
-            for (int i = 0; i < groups.Count; i++)
+            int max = n; 
+            if (result.Count > 0 && n > result.Last()) max = result.Last();
+            for (int i = max; i > 0; i--)
             {
-                groups[i].Add(ls[idx]);
-                GroupAssignments(ls, idx + 1, groups);
-                groups[i].Remove(ls[idx]);
+                result.Add(i);
+                Sums(n - i, result);
+                result.RemoveAt(result.Count - 1);
             }
-            // Add the current element to a new group
-            groups.Add(new List<string>());
-            groups[groups.Count - 1].Add(ls[idx]);
-            GroupAssignments(ls, idx + 1, groups);
-            groups.RemoveAt(groups.Count - 1);
         }
 
-        static void PrintGroups(List<List<string>> groups)
+        static void PrintSums(List<int> result)
         {
-            foreach (List<string> group in groups)
-            {
-                Console.Write("| ");
-                foreach (string s in group)
-                {
-                    Console.Write(s + " ");
-                }
-            }
-            Console.WriteLine("|");
+            Console.WriteLine(String.Join('+', result)); ;         
         }
-
-        static void KGroupAssignments(List<string> ls, int k)
-        {
-            var groups = new List<List<string>>();
-            KGroupAssignments(ls, 0, groups, k);
-        }
-
-        static void KGroupAssignments(List<string> ls, int idx, List<List<string>> groups, int k)
-        {
-            if (ls.Count == idx)
-            {
-                if (groups.Count == k) PrintGroups(groups);
-                return;
-            }
-            // Add the current element to each existing group
-            for (int i = 0; i < groups.Count; i++)
-            {
-                groups[i].Add(ls[idx]);
-                KGroupAssignments(ls, idx + 1, groups, k);
-                groups[i].Remove(ls[idx]);
-            }
-            // Add the current element to a new group
-            groups.Add(new List<string>());
-            groups[groups.Count - 1].Add(ls[idx]);
-            KGroupAssignments(ls, idx + 1, groups, k);
-            groups.RemoveAt(groups.Count - 1);
-        }
-        
-        static void KGroupAssignmentsEmpty(List<string> ls, int k)
-        {
-            var groups = new List<List<string>>();
-            KGroupAssignmentsEmpty(ls, 0, groups, k);
-        }
-
-        static void KGroupAssignmentsEmpty(List<string> ls, int idx, List<List<string>> groups, int k)
-        {
-            if (ls.Count == idx)
-            {
-                if (groups.Count <= k) 
-                {
-                    PrintGroupsEmpty(groups, k);
-                }
-                return;
-            }
-            // Add the current element to each existing group
-            for (int i = 0; i < groups.Count; i++)
-            {
-                groups[i].Add(ls[idx]);
-                KGroupAssignmentsEmpty(ls, idx + 1, groups, k);
-                groups[i].Remove(ls[idx]);
-            }
-            // Add the current element to a new group
-            groups.Add(new List<string>());
-            groups[groups.Count - 1].Add(ls[idx]);
-            KGroupAssignmentsEmpty(ls, idx + 1, groups, k);
-            groups.RemoveAt(groups.Count - 1);
-        }
-
-        static void PrintGroupsEmpty(List<List<string>> groups, int k)
-        {
-            foreach (List<string> group in groups)
-            {
-                Console.Write("| ");
-                foreach (string s in group)
-                {
-                    Console.Write(s + " ");
-                }                
-            }
-            Console.Write("|");
-
-            if (groups.Count < k)
-            {
-                for (int i = 0; i < k - groups.Count; i++)
-                {
-                    Console.Write(" |");
-                }
-            }
-            Console.WriteLine();
-        }
-
     }
-
 }
